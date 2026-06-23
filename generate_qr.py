@@ -54,6 +54,30 @@ for row in range(module_count):
 
 image.save(folder / "wolfram-dankesbotschaft-qr.png", optimize=True)
 
+# Reduzierte SVG speziell für CAD-Importe: nur ein zusammengesetzter Pfad,
+# keine Schriften, Bilder, Filter oder ReportLab-Metadaten. Die vier Module
+# breite Ruhezone bleibt über die viewBox erhalten.
+path_parts = []
+for row in range(module_count):
+    for column in range(module_count):
+        if code.qr.isDark(row, column):
+            x = column + quiet_modules
+            y = row + quiet_modules
+            path_parts.append(f"M{x} {y}h1v1h-1z")
+
+cad_svg = (
+    '<?xml version="1.0" encoding="UTF-8"?>\n'
+    '<svg xmlns="http://www.w3.org/2000/svg" '
+    'width="20mm" height="20mm" '
+    f'viewBox="0 0 {image_modules} {image_modules}">\n'
+    f'  <path d="{"".join(path_parts)}" fill="#000000"/>\n'
+    '</svg>\n'
+)
+(folder / "wolfram-dankesbotschaft-qr-catia.svg").write_text(
+    cad_svg,
+    encoding="utf-8",
+)
+
 print(
     f"QR-Code erstellt: {website_url}, "
     f"{module_count} × {module_count} Module"
