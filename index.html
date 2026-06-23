@@ -271,100 +271,6 @@
       font-weight: 650;
     }
 
-    .qr-section {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: clamp(42px, 8vw, 110px);
-      align-items: center;
-      padding: clamp(44px, 7vw, 84px);
-      margin-bottom: clamp(62px, 9vw, 108px);
-      color: white;
-      background:
-        linear-gradient(125deg, rgba(255, 255, 255, 0.03), transparent 45%),
-        var(--wine-dark);
-      border-radius: 3px;
-      overflow: hidden;
-      box-shadow: 0 24px 60px rgba(63, 16, 25, 0.2);
-    }
-
-    .qr-copy .eyebrow { color: var(--gold); }
-
-    .qr-copy h2 {
-      max-width: 600px;
-      margin: 0 0 20px;
-      font: 400 clamp(38px, 6vw, 72px)/1 Georgia, "Times New Roman", serif;
-      letter-spacing: -0.035em;
-    }
-
-    .qr-copy > p {
-      max-width: 610px;
-      margin: 0 0 30px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 15px;
-      line-height: 1.75;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 46px;
-      padding: 0 19px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 999px;
-      color: white;
-      background: transparent;
-      font: 700 12px/1 Inter, ui-sans-serif, system-ui, sans-serif;
-      letter-spacing: 0.04em;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
-    }
-
-    .button:hover { transform: translateY(-2px); }
-    .button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-
-    .button.primary {
-      color: var(--wine-dark);
-      background: var(--gold);
-      border-color: var(--gold);
-    }
-
-    .qr-frame {
-      position: relative;
-      width: clamp(280px, 32vw, 400px);
-      padding: 17px;
-      background: white;
-      border-radius: 2px;
-      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.22);
-    }
-
-    .qr-frame::after {
-      content: "Vollständige Botschaft";
-      position: absolute;
-      right: 0;
-      bottom: -29px;
-      left: 0;
-      color: rgba(255, 255, 255, 0.53);
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    .qr-frame img {
-      display: block;
-      width: 100%;
-      height: auto;
-      image-rendering: pixelated;
-    }
-
     footer {
       display: flex;
       justify-content: space-between;
@@ -413,27 +319,18 @@
       .rail-years { margin-top: 0; text-align: right; }
       .letter-body { padding: 44px clamp(25px, 7vw, 48px) 54px; }
 
-      .qr-section {
-        grid-template-columns: 1fr;
-        justify-items: start;
-        padding: 44px 18px 68px;
-      }
-
-      .qr-copy { padding: 0 12px; }
-      .qr-frame { width: min(100%, 360px); justify-self: center; }
       footer { flex-direction: column; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .reveal { opacity: 1; transform: none; transition: none; }
-      .button { transition: none; }
     }
 
     @media print {
       @page { size: A4; margin: 15mm; }
       body { background: white; }
-      body::before, .masthead, .hero, .qr-section, footer { display: none !important; }
+      body::before, .masthead, .hero, footer { display: none !important; }
       .page { width: 100%; }
       .letter-shell { margin: 0; }
       .letter-shell::before { display: none; }
@@ -494,22 +391,6 @@
           </div>
         </article>
       </section>
-
-      <section class="qr-section reveal" aria-labelledby="qr-title">
-        <div class="qr-copy">
-          <p class="eyebrow">Für die Karte</p>
-          <h2 id="qr-title">Scannen und direkt öffnen.</h2>
-          <p>Dieser QR-Code führt direkt zu dieser persönlichen Dankeswebseite. Einfach mit der Kamera scannen – die Seite öffnet sich ohne Umweg über eine Google-Suche.</p>
-          <div class="actions">
-            <a class="button primary" href="wolfram-dankesbotschaft-qr.png" download="QR-Code-Dankesbotschaft-Wolfram.png">QR-Code herunterladen</a>
-            <button class="button" type="button" id="copy-button">Text kopieren</button>
-            <button class="button" type="button" onclick="window.print()">Brief drucken</button>
-          </div>
-        </div>
-        <div class="qr-frame">
-          <img src="wolfram-dankesbotschaft-qr.png" alt="QR-Code mit der vollständigen Dankesbotschaft für Wolfram" width="1450" height="1450">
-        </div>
-      </section>
     </main>
 
     <footer>
@@ -533,32 +414,6 @@
     } else {
       revealElements.forEach((element) => element.classList.add('visible'));
     }
-
-    const copyButton = document.querySelector('#copy-button');
-    copyButton.addEventListener('click', async () => {
-      const message = document.querySelector('#botschaft').innerText.trim();
-      const original = copyButton.textContent;
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(message);
-        } else {
-          const helper = document.createElement('textarea');
-          helper.value = message;
-          helper.setAttribute('readonly', '');
-          helper.style.position = 'fixed';
-          helper.style.opacity = '0';
-          document.body.appendChild(helper);
-          helper.select();
-          const copied = document.execCommand('copy');
-          helper.remove();
-          if (!copied) throw new Error('Kopieren wurde vom Browser blockiert.');
-        }
-        copyButton.textContent = 'Text kopiert ✓';
-      } catch {
-        copyButton.textContent = 'Kopieren nicht möglich';
-      }
-      window.setTimeout(() => { copyButton.textContent = original; }, 5000);
-    });
   </script>
 </body>
 </html>
